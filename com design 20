@@ -1,0 +1,31 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+"\""([^"\\]|\\.)*\""   { printf("Constant string: %s\n", yytext); }
+'[^']*'                { printf("Constant character: %s\n", yytext); }
+[0-9]+                 { printf("Constant integer: %s\n", yytext); }
+[+-]?[0-9]+\.[0-9]+    { printf("Constant floating-point: %s\n", yytext); }
+\n                     { /* Ignore new lines */ }
+.                      { /* Ignore other characters */ }
+%%
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        printf("Please provide the input C program file.\n");
+        return 1;
+    }
+
+    FILE* file = fopen(argv[1], "r");
+    if (!file) {
+        printf("Failed to open the input file.\n");
+        return 1;
+    }
+
+    yyin = file;
+    yylex();
+
+    fclose(file);
+    return 0;
+}
