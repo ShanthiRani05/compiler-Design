@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <ctype.h>
+
+char input[100];
+int index = 0;
+char lookahead;
+
+void E();
+void T();
+void F();
+
+void error() {
+    printf("Syntax error\n");
+    exit(0);
+}
+
+void match(char expected) {
+    if (lookahead == expected) {
+        lookahead = input[index++];
+        if (lookahead == '\0') {
+            printf("Parsing completed successfully!\n");
+            exit(0);
+        }
+    } else {
+        error();
+    }
+}
+
+void E() {
+    T();
+    if (lookahead == '+') {
+        match('+');
+        T();
+        E();
+    }
+}
+
+void T() {
+    F();
+    if (lookahead == '*') {
+        match('*');
+        F();
+        T();
+    }
+}
+
+void F() {
+    if (lookahead == '(') {
+        match('(');
+        E();
+        match(')');
+    } else if (isalpha(lookahead)) {
+        match(lookahead);
+    } else {
+        error();
+    }
+}
+
+int main() {
+    printf("Enter an expression: ");
+    scanf("%s", input);
+
+    lookahead = input[index++];
+    E();
+
+    printf("Parsing completed successfully!\n");
+
+    return 0;
+}
