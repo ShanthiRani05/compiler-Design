@@ -1,0 +1,10 @@
+def count_consonants(sentence):
+    consonant_count = 0
+    vowels = ['a', 'e', 'i', 'o', 'u']
+
+    for ch in sentence.lower():
+        if ch.isalpha():
+            if ch not in vowels:
+                consonant_count += 1
+
+    return consonant_count
