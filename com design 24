@@ -1,0 +1,40 @@
+%{
+#include <stdio.h>
+int commentCount = 0;
+%}
+
+%%
+"/*"([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+"/"  { commentCount++; }
+"//".*"\n"                                     { commentCount++; }
+.                                              { printf("%s", yytext); }
+%%
+
+int main(int argc, char* argv[]) {
+    if (argc < 3) {
+        printf("Please provide the input and output file names.\n");
+        return 1;
+    }
+
+    FILE* inputFile = fopen(argv[1], "r");
+    if (!inputFile) {
+        printf("Failed to open the input file.\n");
+        return 1;
+    }
+
+    FILE* outputFile = fopen(argv[2], "w");
+    if (!outputFile) {
+        printf("Failed to open the output file.\n");
+        fclose(inputFile);
+        return 1;
+    }
+
+    yyin = inputFile;
+    yyout = outputFile;
+    yylex();
+
+    fclose(inputFile);
+    fclose(outputFile);
+
+    printf("Number of comment lines: %d\n", commentCount);
+    return 0;
+}
