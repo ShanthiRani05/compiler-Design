@@ -1,0 +1,22 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+"include"   { printf("Header File: %s\n", yytext); }
+"void"      { printf("Data Type: %s\n", yytext); }
+"int"       { printf("Data Type: %s\n", yytext); }
+"printf"    { printf("Function Call: %s\n", yytext); }
+"{"         { printf("Opening Brace\n"); }
+"}"         { printf("Closing Brace\n"); }
+"="         { printf("Assignment Operator\n"); }
+";"         { printf("Semicolon\n"); }
+[[:alnum:]]+    { /* Ignore alphanumeric tokens */ }
+[[:space:]]     { /* Ignore whitespace */ }
+.               { printf("Unknown Token: %s\n", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
