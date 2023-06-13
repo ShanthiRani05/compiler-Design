@@ -1,0 +1,27 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[ \t]                       /* Ignore whitespace and tabs */
+\n                          { printf("<NEWLINE>\n"); }
+"#include"                  { printf("<PREPROCESSOR_DIRECTIVE>\t%s\n", yytext); }
+"int"|"float"|"char"|"void" { printf("<DATA_TYPE>\t\t\t%s\n", yytext); }
+"if"|"else"                 { printf("<CONDITIONAL>\t\t%s\n", yytext); }
+"for"|"while"|"do"          { printf("<LOOP>\t\t\t\t%s\n", yytext); }
+"switch"|"case"|"break"     { printf("<CONTROL>\t\t\t%s\n", yytext); }
+"return"                    { printf("<RETURN>\t\t\t%s\n", yytext); }
+"{"                         { printf("<LEFT_BRACE>\t\t\t%s\n", yytext); }
+"}"                         { printf("<RIGHT_BRACE>\t\t%s\n", yytext); }
+"("                         { printf("<LEFT_PAREN>\t\t\t%s\n", yytext); }
+")"                         { printf("<RIGHT_PAREN>\t\t%s\n", yytext); }
+";"                         { printf("<SEMICOLON>\t\t\t%s\n", yytext); }
+[0-9]+                      { printf("<NUMBER>\t\t\t%s\n", yytext); }
+[a-zA-Z_][a-zA-Z0-9_]*      { printf("<IDENTIFIER>\t\t\t%s\n", yytext); }
+.                           { printf("<INVALID_TOKEN>\t\t%s\n", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
