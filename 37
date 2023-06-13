@@ -1,0 +1,14 @@
+%{
+#include <stdio.h>
+#include <string.h>
+%}
+
+%%
+[a-zA-Z]+   { if (strcmp(yytext, "word") == 0) printf("Found 'word'\n"); }
+.           { /* Ignore other characters */ }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
