@@ -1,0 +1,15 @@
+def count_vowels(sentence):
+    vowel_count = 0
+    sentence = sentence.lower()
+
+    for char in sentence:
+        if char in ['a', 'e', 'i', 'o', 'u']:
+            vowel_count += 1
+
+    return vowel_count
+
+
+# Example usage
+user_input = input("Enter a sentence or word: ")
+result = count_vowels(user_input)
+print("Number of vowels:", result)
