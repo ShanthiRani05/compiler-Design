@@ -1,0 +1,16 @@
+%{
+#include <stdio.h>
+#include <string.h>
+%}
+
+%%
+{word}      { if (strcmp(yytext, "old_word") == 0) printf("new_word "); else printf("%s ", yytext); }
+\n          { printf("\n"); }
+.           { printf("%s", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
+
