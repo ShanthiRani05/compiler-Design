@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <ctype.h>
+
+#define MAX_SYMBOLS 10
+
+// Function to check if a symbol is a non-terminal
+bool isNonTerminal(char symbol) {
+    return isupper(symbol);
+}
+
+// Function to check if a symbol is a terminal
+bool isTerminal(char symbol) {
+    return islower(symbol) || isdigit(symbol) || symbol == '(' || symbol == ')';
+}
+
+// Function to compute the LEADING() set for a non-terminal symbol
+void computeLeading(char grammar[][MAX_SYMBOLS], int numProductions, char symbol, bool leading[]) {
+    for (int i = 0; i < numProductions; i++) {
+        if (grammar[i][0] == symbol) {
+            char nextSymbol = grammar[i][3];  // Get the next symbol in the production
+            if (isTerminal(nextSymbol)) {
+                leading[nextSymbol - 'a'] = true;
+            } else if (isNonTerminal(nextSymbol)) {
+                if (leading[nextSymbol - 'A'] == false) {
+                    computeLeading(grammar, numProductions, nextSymbol, leading);
+                }
+                // Add the leading set of the next symbol to the current symbol's leading set
+                for (int j = 0; j < MAX_SYMBOLS; j++) {
+                    if (leading[nextSymbol - 'A']) {
+                        leading[j] = leading[j] || leading[nextSymbol - 'A'];
+                    }
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    int numProductions = 3;
+    char grammar[][MAX_SYMBOLS] = {
+        {'E', ' ', ' ', 'E', '+', 'T'},
+        {'E', ' ', ' ', 'T'},
+        {'T', ' ', ' ', 'T', '*', 'F'},
+        {'T', ' ', ' ', 'F'},
+        {'F', ' ', ' ', '(', 'E', ')'},
+        {'F', ' ', ' ', 'id'}
+    };
+
+    int numTerminals = 7;  // Number of terminals: a-z + ( )
+    bool leading[MAX_SYMBOLS] = {false};
+
+    // Compute the LEADING() set for each non-terminal symbol
+    for (int i = 0; i < numProductions; i++) {
+        char nonTerminal = grammar[i][0];
+        if (!isTerminal(nonTerminal)) {
+            computeLeading(grammar, numProductions, nonTerminal, leading[nonTerminal - 'A']);
+        }
+    }
+
+    // Print the computed LEADING() sets
+    for (int i = 0; i < MAX_SYMBOLS; i++) {
+        if (leading[i]) {
+            printf("LEADING(%c): ", i + 'A');
+            for (int j = 0; j < numProductions; j++) {
+                if (grammar[j][0] == i + 'A') {
+                    printf("%c ", grammar[j][3]);
+                }
+            }
+            printf("\n");
+        }
+    }
+
+    return 0;
+}
