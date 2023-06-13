@@ -1,0 +1,13 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[0-9]{4}-(0[1-9]|1[0-2])-([0-2][1-9]|3[01])    { printf("Valid DOB: %s\n", yytext); }
+.                                               { printf("Invalid DOB: %s\n", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
