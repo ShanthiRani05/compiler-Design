@@ -1,0 +1,14 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+"http://"([a-zA-Z0-9_\-]+\.)+[a-zA-Z]{2,4}"/"([a-zA-Z0-9_\-]+"/")*"  { printf("Valid URL: %s\n", yytext); }
+"https://"([a-zA-Z0-9_\-]+\.)+[a-zA-Z]{2,4}"/"([a-zA-Z0-9_\-]+"/")*" { printf("Valid URL: %s\n", yytext); }
+.               { printf("Invalid URL: %s\n", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
